@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>台灣用電地圖</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <meta property="og:title" content="台灣用電地圖">
+        <meta property="og:description" content="台灣用電地圖依據經濟地理圖資供應中心公佈資料繪製，地理分區為經濟三級發布區">
+        <meta property="og:type" content="website">
+        <meta property="og:image" content="http://kiang.github.io/taipower/og_image.png">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+        <style>
+            html, body {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            #map-canvas {
+                height: 600px;
+                width: 100%;
+                min-height: 600px;
+            }
+            #title {
+                text-align: center;
+                padding: 10px;
+            }
+            .colorBox {
+                width: 1em;
+                height: 1em;
+                border: 1px solid #34495E;
+                display: inline-block;
+                margin: 0 3px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <p class="hidden-sm hidden-xs">&nbsp;</p>
+                <div id="map-canvas" class="col-md-12"></div>
+                <div id="detail" class="col-md-12">
+                    <div class="col-md-8 col-sm-12 col-xs-12">
+                        <h2 id="content" class="text-muted">在地圖上滑動或點選以顯示數據</h2>
+                        <div id="areaDetail"></div>
+                    </div>
+                    <div class="col-md-4 col-sm-12 col-xs-12">
+                        <p>&nbsp;</p>
+                        <div id="fb-root"></div>
+                        <div class="fb-page" data-href="https://www.facebook.com/k.olc.tw" data-width="800" data-hide-cover="true" data-show-facepile="true" data-show-posts="false"></div>
+                    </div>
+                </div>
+                <p class="hidden-md hidden-lg">&nbsp;</p>
+            </div>
+            <div style="text-align: center;">
+                <hr />
+                <a target="_blank" href="https://github.com/kiang/taipower">網站原始碼</a> |
+                <a target="_blank" href="http://egis.moea.gov.tw/MoeaEGPortal/">資料來源</a>
+            </div>
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+        <script src="//maps.googleapis.com/maps/api/js?v=3&key=AIzaSyAHc3-HRqm9C4VnTyWz8ybzw7cY9GoGFRo"></script>
+        <script src="//googlemaps.github.io/js-marker-clusterer/src/markerclusterer.js"></script>
+        <script src="main.js"></script>
+    </body>
+</html>
