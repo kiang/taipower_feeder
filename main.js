@@ -20,7 +20,7 @@ $.getJSON('result.json', function (data) {
 
 function showCity(city) {
     if (mc) {
-        mc.resetViewport();
+        mc.clearMarkers();
     }
     markers = [];
     for (p in feederData[city]) {
@@ -45,6 +45,26 @@ function showCity(city) {
             infowindow.open(map, this);
         });
         markers.push(marker);
+    }
+    switch (city) {
+        case 'TAIPEI':
+            map.setCenter({lat: 25.053699, lng: 121.507837});
+            break;
+        case 'KAOHSIUNG':
+            map.setCenter({lat: 22.643894, lng: 120.317828});
+            break;
+        case 'NEWTAIPEI':
+            map.setCenter({lat: 25.053699, lng: 121.507837});
+            break;
+        case 'TAICHUNG':
+            map.setCenter({lat: 24.167804, lng: 120.658214});
+            break;
+        case 'TAOYUAN':
+            map.setCenter({lat: 24.9656572, lng: 121.222804});
+            break;
+        case 'TAINAN':
+            map.setCenter({lat: 22.996169, lng: 120.201330});
+            break;
     }
     mc = new MarkerClusterer(map, markers, {imagePath: 'http://googlemaps.github.io/js-marker-clusterer/images/m'});
 }
