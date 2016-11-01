@@ -65,6 +65,21 @@ function showCity(city) {
         case 'TAINAN':
             map.setCenter({lat: 22.996169, lng: 120.201330});
             break;
+        case 'CHANGHUA':
+            map.setCenter({lat: 24.0755208, lng: 120.5277283});
+            break;
+        case 'CHIAYI':
+            map.setCenter({lat: 23.4790323, lng: 120.4141912});
+            break;
+        case 'MIAOLI':
+            map.setCenter({lat: 24.515109, lng: 120.8022719});
+            break;
+        case 'PINGTUNG':
+            map.setCenter({lat: 22.6664029, lng: 120.446815});
+            break;
+        case 'YUNLIN':
+            map.setCenter({lat: 23.6738625, lng: 120.294164});
+            break;
     }
     mc = new MarkerClusterer(map, markers, {imagePath: 'http://googlemaps.github.io/js-marker-clusterer/images/m'});
 }
