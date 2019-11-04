@@ -81,7 +81,7 @@ function showCity(city) {
             map.setCenter({lat: 23.6738625, lng: 120.294164});
             break;
     }
-    mc = new MarkerClusterer(map, markers, {imagePath: 'http://googlemaps.github.io/js-marker-clusterer/images/m'});
+    mc = new MarkerClusterer(map, markers, {imagePath: 'images/m'});
 }
 
 function showFeeder(feeder) {
