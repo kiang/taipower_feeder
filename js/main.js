@@ -57,6 +57,32 @@ var vectorPoints = new ol.layer.Vector({
   style: pointStyleFunction
 });
 
+var cunliLoaded = false;
+var cunli = new ol.layer.Vector({
+  style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'rgba(37,67,140,0.5)',
+      width: 1
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(255,255,255,0.1)'
+    })
+  })
+});
+$('#btn-load-cunli').click(function(e) {
+  e.preventDefault();
+  if(false === cunliLoaded) {
+    cunliLoaded = true;
+    var cunliSource = new ol.source.Vector({
+      format: new ol.format.TopoJSON({
+        featureProjection: appView.getProjection()
+      }),
+      url: 'json/cunli.json'
+    });
+    cunli.setSource(cunliSource);
+  }
+});
+
 var baseLayer = new ol.layer.Tile({
     source: new ol.source.WMTS({
         matrixSet: 'EPSG:3857',
@@ -76,23 +102,33 @@ var baseLayer = new ol.layer.Tile({
 });
 
 var map = new ol.Map({
-  layers: [baseLayer, vectorPoints],
+  layers: [baseLayer, cunli, vectorPoints],
   target: 'map',
   view: appView
 });
 
 map.addControl(sidebar);
-var pointClicked = false;
 map.on('singleclick', function(evt) {
   content.innerHTML = '';
-  pointClicked = false;
+  var pointClicked = false, cunliClicked = false;
   map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
-    if(false === pointClicked) {
+    var p = feature.getProperties();
+    if(false === pointClicked && p.capacity) {
       var targetHash = '#' + feature.getId();
       if (window.location.hash !== targetHash) {
         window.location.hash = targetHash;
       }
       pointClicked = true;
+    }
+    if(false === cunliClicked && p.VILLNAME) {
+      cunliClicked = true;
+      var message = '<table class="table table-dark">';
+      message += '<tbody>';
+      message += '<tr><th scope="row">縣市</th><td>' + p.COUNTYNAME + '</td></tr>';
+      message += '<tr><th scope="row">鄉鎮市區</th><td>' + p.TOWNNAME + '</td></tr>';
+      message += '<tr><th scope="row">村里</th><td>' + p.VILLNAME + '</td></tr>';
+      message += '</tbody></table>';
+      content.innerHTML = content.innerHTML + message;
     }
   });
 });
@@ -162,7 +198,6 @@ var selectFeeder = function(feederId) {
     for(k in features) {
       if(features[k].getId() === feederId) {
         var p = features[k].getProperties();
-        console.log(p);
         currentFeature = features[k];
         features[k].setStyle(pointStyleFunction(features[k]));
         if(false !== previousFeature) {
