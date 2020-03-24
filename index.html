@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta property="og:title" content="台電再生能源可併網容量地圖">
+  <meta property="og:description" content="台電再生能源可併網容量地圖">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="http://kiang.github.io/taipower_feeder/og_image.png">
+    <title>台電再生能源可併網容量地圖</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/ol.css" type="text/css">
+    <link rel="stylesheet" href="css/ol3-sidebar.min.css" type="text/css" />
+    <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/dark-hive/jquery-ui.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/dark-hive/theme.min.css" crossorigin="anonymous">
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        html, body, #map {
+            height: 100%;
+            font: 10pt "Helvetica Neue", Arial, Helvetica, sans-serif;
+        }
+
+        .lorem {
+            font-style: italic;
+            color: #AAA;
+        }
+        .ui-front { z-index: 9999; }
+    </style>
+</head>
+<body>
+  <div id="fb-root"></div>
+<script>
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = 'https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.12&appId=1393405437614114&autoLogAppEvents=1';
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+</script>
+    <div id="sidebar" class="sidebar collapsed">
+        <!-- Nav tabs -->
+        <div class="sidebar-tabs">
+            <ul role="tablist">
+                <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+                <li><a href="#book" role="tab"><i class="fa fa-book"></i></a></li>
+                <li><a href="#settings" role="tab"><i class="fa fa-gear"></i></a></li>
+                <li><a href="https://github.com/kiang/taipower_feeder" role="tab" target="_blank"><i class="fa fa-github"></i></a></li>
+                <li><a href="#fb" role="tab"><i class="fa fa-facebook"></i></a></li>
+            </ul>
+        </div>
+
+        <!-- Tab panes -->
+        <div class="sidebar-content">
+            <div class="sidebar-pane" id="home">
+              <h1 class="sidebar-header"><span id="sidebarTitle">請點選地圖中的點</span><span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+              <div id="sidebarContent">請點選地圖中的點</div>
+              <div class="btn-group-vertical" role="group" style="width: 100%;">
+                <a href="https://github.com/kiang/taipower_feeder/issues" target="_blank" class="btn btn-primary btn-lg btn-block">網站問題反應</a>
+              </div>
+            </div>
+            <div class="sidebar-pane" id="book">
+                <h1 class="sidebar-header"><span id="weekTitle">說明</span><span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+                <div>
+                    注意事項：
+                    <ul>
+                        <li>初次載入會需要比較久時間，資料載入後右上角會出現縣市按鈕</li>
+                        <li>點選縣市按鈕後會顯示該縣市的所有變電箱點位（紅色標記）</li>
+                        <li>點選個別變電箱點位會列出該變電箱可以使用的饋線與對應容量</li>
+                        <li>點選視窗的饋線代號會呈現該饋線所有對應的變電箱（綠色標記）</li>
+                        <li>畫面中帶有數字的圖示，顏色深淺只是代表點位數量的大小，數量越多顏色越深</li>
+                        <li>https://hcweb.taipower.com.tw/geohc/</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="sidebar-pane" id="settings">
+                <h1 class="sidebar-header"><span id="weekTitle">設定</span><span class="sidebar-close"><i class="fa fa-caret-left"></i></span></h1>
+                <div>
+                    <a href="#" class="btn btn-primary btn-lg btn-block" id="btn-geolocation">回到目前位置</a>
+                    <p><hr /></p>
+                    <div class="card">
+                        <h5 class="card-title">切換縣市</h5>
+                        <div class="form-group">
+                            <label for="selectCity">名稱或代號</label>
+                            <select id="selectCity" name="selectCity" class="form-control">
+                                <option value="">--請選擇--</option>
+                                <option value="CHANGHUA">彰化</option>
+                                <option value="CHIAYI">嘉義</option>
+                                <option value="HSINCHU">新竹</option>
+                                <option value="HUALIEN">花蓮</option>
+                                <option value="KAOHSIUNG">高雄</option>
+                                <option value="KEELUNG">基隆</option>
+                                <option value="MIAOLI">苗栗</option>
+                                <option value="NANTOU">南投</option>
+                                <option value="NEWTAIPEI">新北</option>
+                                <option value="PINGTUNG">屏東</option>
+                                <option value="TAICHUNG">台中</option>
+                                <option value="TAINAN">台南</option>
+                                <option value="TAIPEI">台北</option>
+                                <option value="TAITUNG">台東</option>
+                                <option value="TAOYUAN">桃園</option>
+                                <option value="YILAN">宜蘭</option>
+                                <option value="YUNLIN">雲林</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-pane" id="fb">
+              <div class="fb-page" data-href="https://www.facebook.com/k.olc.tw/" data-tabs="timeline" data-width="380" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/k.olc.tw/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/k.olc.tw/">江明宗</a></blockquote></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="map" class="sidebar-map"></div>
+    <script src="js/routie.min.js" type="text/javascript"></script>
+    <script src="js/jquery.min.js" type="text/javascript"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="js/ol.js" type="text/javascript"></script>
+    <script src="js/ol5-sidebar.min.js" type="text/javascript"></script>
+    <script src="js/main.js" type="text/javascript"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-80817009-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-80817009-1');
+</script>
+</body>
+</html>
