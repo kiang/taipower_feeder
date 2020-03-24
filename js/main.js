@@ -80,6 +80,7 @@ $('#btn-load-cunli').click(function(e) {
       url: 'json/cunli.json'
     });
     cunli.setSource(cunliSource);
+    sidebar.close();
   }
 });
 
@@ -138,6 +139,7 @@ $('#selectCity').change(function(e) {
   if (window.location.hash !== targetHash) {
     window.location.hash = targetHash;
   }
+  sidebar.close();
 });
 
 var previousFeature = false;
@@ -266,6 +268,7 @@ $('#btn-geolocation').click(function () {
   } else {
     alert('目前使用的設備無法提供地理資訊');
   }
+  sidebar.close();
   return false;
 });
 
