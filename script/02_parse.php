@@ -77,6 +77,15 @@ foreach($feeders AS $city => $a1) {
 
         $nameNode = $dom->createElement('name', $city . ' ' . $key);
         $placeNode->appendChild($nameNode);
+
+        $extendedDataNode = $dom->createElement('ExtendedData');
+        $extendedDataDataNode = $dom->createElement('Data');
+        $extendedDataDataNode->setAttribute('name', 'capacity');
+        $extendedDataValueNode = $dom->createElement('value', $feeder['capacity']);
+        $extendedDataDataNode->appendChild($extendedDataValueNode);
+        $extendedDataNode->appendChild($extendedDataDataNode);
+
+        $placeNode->appendChild($extendedDataNode);
         
         $lineNode = $dom->createElement('MultiGeometry');
         $placeNode->appendChild($lineNode);

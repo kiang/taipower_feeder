@@ -162,6 +162,7 @@ var selectFeeder = function(feederId) {
     for(k in features) {
       if(features[k].getId() === feederId) {
         var p = features[k].getProperties();
+        console.log(p);
         currentFeature = features[k];
         features[k].setStyle(pointStyleFunction(features[k]));
         if(false !== previousFeature) {
@@ -171,6 +172,7 @@ var selectFeeder = function(feederId) {
         var message = '<table class="table table-dark">';
         message += '<tbody>';
         message += '<tr><th scope="row">Feeder Name</th><td>' + p.name + '</td></tr>';
+        message += '<tr><th scope="row">Capacity</th><td>' + p.capacity + '</td></tr>';
         message += '</tbody></table>';
         sidebarTitle.innerHTML = p.name;
         content.innerHTML = message;
