@@ -1,6 +1,7 @@
 <?php
 
 $path = dirname(__DIR__);
+$kmlPath = $path . '/kml';
 $capacity = array();
 /*
   Array
@@ -8,6 +9,8 @@ $capacity = array();
   [0] => FEEDER
   [1] => CAPACITY
   )
+
+  [CHANGHUA_9K23] => 4677.8
  */
 foreach (glob($path . '/src/*_capacity.csv') AS $csvFile) {
     $p = pathinfo($csvFile);
@@ -19,7 +22,7 @@ foreach (glob($path . '/src/*_capacity.csv') AS $csvFile) {
     }
 }
 
-$result = array();
+$feeders = array();
 
 /*
 
@@ -34,26 +37,60 @@ $result = array();
 foreach (glob($path . '/src/*_feeder.csv') AS $csvFile) {
     $p = pathinfo($csvFile);
     $city = str_replace('_tr_feeder', '', $p['filename']);
+    if (!isset($result[$city])) {
+        $feeders[$city] = array();
+    }
     $fh = fopen($csvFile, 'r');
     fgetcsv($fh, 2048);
     while ($line = fgetcsv($fh, 2048)) {
-        if (!isset($result[$city])) {
-            $result[$city] = array();
+        $point = twd97_to_latlng($line[1], $line[2], '67');
+        $capKey = $city . '_' . $line[3];
+        if(!isset($capacity[$capKey])) {
+            $capacity[$capKey] = 0.0;
         }
-        $key = "" . $line[1] . "," . $line[2];
-        if (!isset($result[$city][$key])) {
-            $result[$city][$key] = twd97_to_latlng($line[1], $line[2], '67');
-            $result[$city][$key]['feeders'] = array(
-                $line[3] => $capacity[$city . '_' . $line[3]],
+        if(!isset($feeders[$city][$line[3]])) {
+            $feeders[$city][$line[3]] = array(
+                'capacity' => $capacity[$capKey],
+                'line' => array(),
             );
-        } else {
-            $result[$city][$key]['feeders'][$line[3]] = $capacity[$city . '_' . $line[3]];
         }
+        $feeders[$city][$line[3]]['line'][] = $point;
     }
 }
 
-file_put_contents($path . '/result.json', json_encode($result, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+foreach($feeders AS $city => $a1) {
+    // Start KML file, create parent node
+    $dom = new DOMDocument('1.0','UTF-8');
 
+    //Create the root KML element and append it to the Document
+    $node = $dom->createElementNS('http://earth.google.com/kml/2.1','kml');
+    $parNode = $dom->appendChild($node);
+    
+    //Create a Document element and append it to the KML element
+    $fnode = $dom->createElement('Document');
+    $folderNode = $parNode->appendChild($fnode);
+
+    foreach($a1 AS $key => $feeder) {
+        $node = $dom->createElement('Placemark');
+        $placeNode = $folderNode->appendChild($node);
+        $placeNode->setAttribute('id', $city . '_' . $key);
+
+        $nameNode = $dom->createElement('name', $city . ' ' . $key);
+        $placeNode->appendChild($nameNode);
+        
+        $lineNode = $dom->createElement('MultiGeometry');
+        $placeNode->appendChild($lineNode);
+
+        foreach($feeder['line'] AS $point) {
+            $pointNode = $dom->createElement('Point');
+            $coorNode = $dom->createElement('coordinates', implode(',', array($point['lng'], $point['lat'])));
+            $pointNode->appendChild($coorNode);
+            $lineNode->appendChild($pointNode);
+        }
+        
+    }
+    file_put_contents($kmlPath . '/' . $city . '.kml', $dom->saveXML());
+}
 
 /*
   from https://gist.github.com/pingyen/1346895
