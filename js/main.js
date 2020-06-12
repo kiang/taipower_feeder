@@ -118,6 +118,8 @@ map.on('singleclick', function(evt) {
       var targetHash = '#' + feature.getId();
       if (window.location.hash !== targetHash) {
         window.location.hash = targetHash;
+      } else {
+        showFeeder(feature.getId());
       }
       pointClicked = true;
     }
