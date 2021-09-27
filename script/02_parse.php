@@ -18,7 +18,8 @@ foreach (glob($path . '/src/*_capacity.csv') AS $csvFile) {
     $fh = fopen($csvFile, 'r');
     fgetcsv($fh, 2048);
     while ($line = fgetcsv($fh, 2048)) {
-        $capacity[$city . $line[0]] = floatval($line[1]);
+        $key = $city . substr($line[0], -4);
+        $capacity[$key] = floatval($line[1]);
     }
 }
 
